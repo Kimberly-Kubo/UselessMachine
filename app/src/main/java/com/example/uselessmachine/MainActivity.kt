@@ -1,5 +1,6 @@
 package com.example.uselessmachine
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,27 +10,53 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         var time = 0L
         var ticks = 0
-        progressBar_main_lookBusy.visibility = View.INVISIBLE
-        textView_main_lookBusy.visibility = View.INVISIBLE
+        progressBar_main_lookBusy.visibility = View.GONE
+        textView_main_lookBusy.visibility = View.GONE
 
         //lambda below is implementing onClick(v: View!) without mentioning it explicitly
         //lambda --> anonymous function
         //parameter is referenced by "it" --> when there is one parameter in the function
         //$ refers to variable
+        //Toast.makeText(this, "Hello this is the text of the button ${(it as Button).text.toString()}", Toast.LENGTH_SHORT).show()
+
         button_main_lookBusy.setOnClickListener {
-            //Toast.makeText(this, "Hello this is the text of the button ${(it as Button).text.toString()}", Toast.LENGTH_SHORT).show()
-            button_main_selfDestruct.visibility = View.INVISIBLE
-            button_main_lookBusy.visibility = View.INVISIBLE
-            switch_main_useless.visibility = View.INVISIBLE
+            var load = 0
+            button_main_selfDestruct.visibility = View.GONE
+            button_main_lookBusy.visibility = View.GONE
+            switch_main_useless.visibility = View.GONE
             progressBar_main_lookBusy.visibility = View.VISIBLE
             textView_main_lookBusy.visibility = View.VISIBLE
 
+            var loadingTime = object: CountDownTimer(10000, 100)
+            {
+                override fun onFinish() {
+                    button_main_selfDestruct.visibility = View.VISIBLE
+                    button_main_lookBusy.visibility = View.VISIBLE
+                    switch_main_useless.visibility = View.VISIBLE
+                    progressBar_main_lookBusy.visibility = View.GONE
+                    textView_main_lookBusy.visibility = View.GONE
+                }
+                override fun onTick(p0: Long) {
+                    progressBar_main_lookBusy.progress = load
+                    textView_main_lookBusy.text = "Loading files... $load/100"
+                    if (load <= 100)
+                    {
+                        load++
+                    }
+                    else
+                    {
+                        onFinish()
+                    }
+                }
+            }
+            loadingTime.start()
 
         }
 
